@@ -1,0 +1,53 @@
+// Color
+$black: #111111;
+$red: #de2c26;
+$blue: #01aaef;
+$gray: #999999;
+$light-gray: #f4f4f4;
+$pale-gray: #f1f1f1;
+
+/// Gray
+$gray: #999999;
+$alt-gray: #dedede; //to be remove
+$alt-gray-2: #666666;
+$alt-gray-3: #f1f1f1;
+$pale-gray: #f2f2f2;
+$fog-gray: #eaeaea;
+$pearl-river: #dedede;
+$harbor-gray: #cccccc;
+$dark-gray: #252927;
+
+// Link Color
+$link-color: #26A0E3;
+
+// Body
+$body-bg-color: white;
+$body-color: #333333;
+$body-font-size: 16px;
+
+// Border
+$border-color: #dddddd;
+$border: 1px solid $border-color;
+
+// Button
+$button-bg-color: $blue;
+$button-disabled-bg-color: #d1d1d1;
+
+// scroll
+$scroll-bg: #676567;
+$scroll-track: #d8d6d8;
+$scroll-bg-overlay: #676567;
+
+// Utilities
+$spacing: 15px;
+$spacing-sm: 6px;
+
+//forms
+$form-control-text-brdr--error: #ffb8af;
+$rating-bg--error: #ffd8d3;
+
+// Header
+$header-height: 54px;
+$header-gap: calc(100% - 50px);
+$header-indicator-width: 12px;
+$header-breakpoint-mobile: "md";

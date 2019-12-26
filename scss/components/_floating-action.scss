@@ -1,0 +1,59 @@
+.floating-action {
+    position: fixed;
+    right: 2%;
+    bottom: 85px;
+    z-index: 5;
+    transition: all 0.3s ease-in-out;
+    transform: translateX(200%);
+
+    &--scroll-top {
+        transform: translateX(200%);
+        bottom: 30px;
+        .floating-action__container {
+            background-color: #3498db;
+
+            &:hover {
+                background-color: darken(#3498db, 10%);
+            }
+        }
+
+        &.active {
+            transform: translateX(0%);
+        }
+    }
+
+    &.active {
+        transform: translateX(0%);
+    }
+
+    &.loading {
+        .floating-action__container {
+            background-color: lighten(#e74c3c, 10%);
+        }
+    }
+
+    &__container {
+        padding: 10px 15px;
+        background-color: #e74c3c;
+        border-radius: 50%;
+        box-shadow: 3px 3px 3px #cec8c8;
+
+        &:hover {
+            background-color: darken(#e74c3c, 10%);
+        }
+    }
+
+    .download__compress {
+        color: #fff;
+        cursor: pointer;
+    }
+
+    .scroll {
+        color: #fff;
+        cursor: pointer;
+    }
+
+    .spinner {
+        width: 17px;
+    }
+}

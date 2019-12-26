@@ -1,0 +1,101 @@
+// default modal styles
+.modal {
+    &-dialog {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) !important;
+        width: 100%;
+        margin: 0;
+    }
+
+    &-lg {
+        max-width: 1290px;
+    }
+    &-content {
+    }
+
+    &-body {
+        img {
+            width: 100%;
+            max-height: 80vh;
+        }
+    }
+
+    &-footer {
+    }
+}
+
+// customize modal
+.modal--photo {
+    .modal {
+        &-body {
+            padding: 0;
+
+            .modal-bg-image {
+                background-size: cover;
+                background-repeat: no-repeat;
+                background-position: center;
+                height: 50vh;
+            }
+        }
+
+        &-header {
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 5;
+            border-bottom: none;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+
+            @include media-breakpoint-up(sm) {
+                top: -45px;
+                background-color: transparent;
+            }
+
+            .close {
+                color: #fff;
+                text-shadow: none;
+                opacity: 1;
+                padding: 0;
+                margin: 0;
+
+                &:hover {
+                    color: #ccc;
+                }
+            }
+        }
+
+        &-footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            z-index: 5;
+            color: #fff;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-top: none;
+            justify-content: left;
+        }
+    }
+
+    .details {
+        padding: $spacing;
+        @include make-row();
+
+        &__info {
+            @include make-col(20);
+            padding-right: $spacing;
+        }
+    }
+
+    .favorite {
+        &.active {
+            background-color: #bd2130;
+            color: #fff;
+            svg {
+                color: #fff;
+            }
+        }
+    }
+}

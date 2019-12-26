@@ -1,0 +1,49 @@
+.cb {
+    &__container {
+        position: relative;
+        margin: 0px;
+
+        &--block {
+            display: block;
+        }
+    }
+
+    &__input {
+        position: relative;
+        z-index: 1;
+        opacity: 0;
+        width: 15px;
+        height: 15px;
+        top: 4px;
+        cursor: pointer;
+
+        &:checked ~ .cb__indicator {
+            &:before {
+                opacity: 1;
+            }
+        }
+    }
+
+    &__indicator {
+        position: absolute;
+        top: 6px;
+        left: 0;
+        border: 1px solid #ccc;
+        width: 15px;
+        height: 15px;
+        background-color: #fff;
+
+        &:before {
+            content: '';
+            border: solid #000;
+            border-width: 0px 0px 4px 1px;
+            width: 10px;
+            height: 10px;
+            position: absolute;
+            transform: rotate(-60deg) scale(0.7);
+            left: 1px;
+            opacity: 0;
+            transition: all 0.3s ease-in-out;
+        }
+    }
+}

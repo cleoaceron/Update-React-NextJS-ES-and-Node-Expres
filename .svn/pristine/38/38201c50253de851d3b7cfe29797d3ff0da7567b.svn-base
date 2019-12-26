@@ -1,0 +1,64 @@
+import React, { useState, useRef, useEffect } from 'react';
+import PropTypes from 'prop-types';
+
+const ImageResult = data => {
+	const [width, setWidth] = useState(0);
+	const ref = useRef(null);
+	// console.log(ref)
+	useEffect(() => {
+		const currentWidth = ref.current ? ref.current.offsetWidth : 0;
+		setWidth(currentWidth)
+		// console.log(currentWidth)
+	}, [ref.current]);
+
+
+	return (
+		<div className='image-result__body' key={data._id}>
+			{data._type === 'product' ?
+
+				<div className='image-result__body--container'>
+					<div className='image-result__body--img' ref={ref}>
+						<img
+							src={`${data.featurePicture.url}` !== `null` ? `${data.featurePicture.url}` : 'https://image-placeholder.com/images/actual-size/100x75.png'}
+							alt={data.name}
+						/>
+					</div>
+					<div className='image-result__body--description'>
+						<a href={data.url} target='_blank'>
+							<p style={{ maxWidth: width }}> <span dangerouslySetInnerHTML={{ __html: data.name }}></span></p>
+							<p style={{ maxWidth: width }}>{data.subHeadText}</p>
+						</a>
+					</div>
+				</div>
+
+				:
+				data._type === 'artist' ?
+					<div className='image-result__body--container'>
+						<div className='image-result__body--img' ref={ref}>
+							<img
+								src={`${data.artistImage}` !== `null` ? `${data.artistImage}` : 'https://image-placeholder.com/images/actual-size/100x75.png'}
+								alt={data.artistName}
+							/>
+						</div>
+						<div className='image-result__body--description'>
+							<a href={data.urlExtension} target='_blank'>
+								<p style={{ maxWidth: width }}><span dangerouslySetInnerHTML={{ __html: data.artistName }}></span> | {data.artistBrand}</p>
+								<p style={{ maxWidth: width }}><span dangerouslySetInnerHTML={{ __html: data.artistBio.replace(/<[^>]+>/g, '').substring(0, 300) }} /></p>
+								{/* <span>{width}</span> */}
+							</a>
+						</div>
+					</div>
+
+					:
+					null}
+		</div>
+	)
+
+}
+
+
+ImageResult.propTypes = {
+	data: PropTypes.any, // eslint-disable-line
+};
+
+export default ImageResult;

@@ -1,0 +1,11 @@
+.result-select {
+	&__container {
+		span{
+			width: 100%;
+		}
+		.show-select {
+			width: 10%;
+			display: inline-block;
+		}
+	}
+}

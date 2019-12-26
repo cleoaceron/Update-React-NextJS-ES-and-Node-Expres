@@ -1,0 +1,22 @@
+.elasticsearch-input {
+	input {
+		background-color: transparent;
+        border: none;
+        border-bottom: 1px solid #dedede;
+		padding: 0;
+		&[aria-expanded=true] {
+			background-color: transparent;
+		}
+	}
+	.search-list {
+		background-color: transparent;
+		max-height: 80vh;
+		border: none;
+		li {
+			background-color: transparent !important;
+			&:hover {
+				background-color: $harbor-gray !important;
+			}
+		}
+	}
+}

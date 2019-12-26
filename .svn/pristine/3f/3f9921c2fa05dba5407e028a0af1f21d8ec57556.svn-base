@@ -1,0 +1,399 @@
+import React, { Component } from 'react'
+import Layout from '../components/Layout'
+import Header from '../components/Header'
+import SearchInput from '../components/SearchInput'
+import TabHeader from './TabHeader'
+import ArtistResult from '../components/ArtistResult'
+
+import Select from 'react-select'
+
+import {
+	ReactiveBase,
+	ReactiveList,
+	SelectedFilters,
+	StateProvider,
+	MultiList,
+	MultiDataList,
+	DataSearch
+} from '@appbaseio/reactivesearch'
+import initReactivesearch from '@appbaseio/reactivesearch/lib/server';
+import Router from 'next/router'
+
+const components = {
+	settings: {
+		app: 'artists,products,downloads,videos,learn,artist,news',
+		// url: 'http://localhost:9200',
+		url: 'https://elastic.musictribe.com',
+	},
+	datasearch: {
+		componentId: 'searchSensor',
+		dataField: ["artistName", "name", "productName", "productId", "code", "title", "subject", "brand"],
+		autosuggest: true,
+		highlight: true,
+		// noInitialQuery: true,
+		placeholder: 'Search',
+		iconPosition: 'right',
+		className: 'global-search__input col-sm-10',
+		innerClass: {
+			input: 'global-input'
+
+		},
+		defaultQuery: (value) => ({
+			"query": {
+				"multi_match": {
+					"query": `"${value}"`,
+					"fields": ["artistName", "name", "productName", "productId", "code", "title", "brand", "subject"]
+				}
+			}
+		}),
+		// customHighlight: (props) => ({
+		// 	"query": {
+		// 		"multi_match": {
+		// 			"query": `"${props.selectedValue}"`,
+		// 			"fields": ["artistName"]
+		// 		}
+		// 	},
+		// 	highlight: {
+		// 		pre_tags: ['<mark>'],
+		// 		post_tags: ['</mark>'],
+		// 		"type": "unified",
+		// 		"number_of_fragments": 3,
+		// 		"fields": {
+		// 			"artistName": {},
+		// 		},
+		// 	},
+		// }),
+		// onValueSelected: '{(value)=> Router.push(`searchSensor=${value}`)}',
+		onValueSelected: (value, cause, source) => {
+			Router.push(`/?searchSensor="${value}"`)
+			// if (!value) {
+			// 	return document.location.href = `/`
+			// } else {
+			// 	return document.location.href = `/?searchSensor="${value}"`
+			// }
+		},
+		// onValueSelected: (value, cause, source) => {
+		// 	Router.push(`searchSensor=${value}`)
+		// },
+		// URLParams: true,
+		// renderNoSuggestion: () => (
+		// 	<div>
+		// 		No suggestion found
+		// </div>
+		// ),
+		// onValueChange: (value) => {
+		// 	if (value === '') {
+		// 		this.setState({ searchText: null })
+		// 	}
+		// },
+		// onValueSelected: (value, cause, source) => {
+		// 	this.setState({ searchText: value.value })
+		// },
+		// render: ({
+		// 	loading,
+		// 	error,
+		// 	data,
+		// 	value,
+		// 	downshiftProps: {
+		// 		isOpen,
+		// 		getItemProps,
+		// 	}
+		// }) => {
+		// 	if (loading) {
+		// 		return <div>Fetching Suggestions.</div>
+		// 	}
+		// 	if (error) {
+		// 		return (
+		// 			<div>
+		// 				Something went wrong! Error details {JSON.stringify(error)}
+		// 			</div>
+		// 		)
+		// 	}
+		// 	return (isOpen && Boolean(value.length)) ? (
+		// 		<div>
+		// 			{data.slice(0, 5).map((suggestion, index) => (
+		// 				<div
+		// 					key={suggestion.value}
+		// 					{...getItemProps({ item: suggestion })}
+		// 				>
+		// 					{suggestion.value}
+		// 					{/* {console.log(suggestion.source)} */}
+		// 				</div>
+		// 			))}
+		// 			{Boolean(value.length) && (
+		// 				<div {...getItemProps({ item: { label: value, value: value } })}>
+		// 					Show all results for "{value}"
+		// 		</div>
+		// 			)}
+		// 			{console.log(data)}
+		// 		</div>
+		// 	) : null
+		// }
+	},
+	resultcard: {
+		componentId: 'artistResult',
+		dataField: 'artistName',
+		size: 10,
+		defaultQuery: () => ({
+			"sort": [
+				"_score"
+			],
+			"query": {
+				"terms": {
+					"_index": ['artists'],
+				},
+			},
+		}),
+		renderResultStats: (stats) => (
+			<div className='result-stats__container'>
+				<p>{`( Showing page ${stats.currentPage + 1} of ${stats.numberOfPages} ) displayed result of ${stats.displayedResults} total of ${stats.numberOfResults} results in ( ${stats.time} ms )`}</p>
+			</div>
+		),
+		render: ({
+			loading,
+			error,
+			data,
+		}) => {
+			if (loading) {
+				return <div className='loader__container'>
+					<img src='/static/loader.gif' />
+				</div>
+			}
+			if (error) {
+				return (
+					<div>
+						Something went wrong! Error details {JSON.stringify(error)}
+					</div>
+				)
+			}
+			return (
+				data.map(item => (
+					<ArtistResult key={item._id} {...item} />
+				))
+			)
+		},
+		pagination: true,
+		URLParams: true,
+		react: {
+			and: ["searchSensor", "artistFilter"],
+		},
+	},
+	artistfilter: {
+		componentId: 'artistFilter',
+		// dataField: 'typesOfArtist.keyword',
+		dataField: 'typesOfArtist.keyword',
+		data: [
+			{
+				label: "Guitar",
+				value: "Guitar",
+			},
+			{
+				label: "Bass",
+				value: "Bass",
+			},
+			{
+				label: "Studio Pros",
+				value: "Production",
+			},
+			{
+				label: "Boradcast",
+				value: "Broadcast",
+			}
+		],
+		title: 'Artists',
+		className: 'filter__container',
+		showSearch: false,
+		showFilter: true,
+		showCount: true,
+		URLParams: true,
+		// selectAllLabel: 'all',
+		// showLoadMore: true,
+		defaultQuery: () => ({
+			query: {
+				terms: {
+					_index: ['artists'],
+				},
+			},
+		}),
+		renderItem: (label, count, isSelected) => (
+			<div>
+				{label}
+				<span style={{
+					marginLeft: 5, color: isSelected ? 'red' : 'dodgerblue'
+				}}>
+					{count}
+				</span>
+			</div>
+		),
+		react: {
+			or: ["searchSensor", "resultCard"],
+			and: ["websiteFilter"]
+		},
+	},
+
+};
+
+export default class Artists extends Component {
+	state = {
+		reactivedata: this.props,
+		value: this.props.url.query.searchSensor,
+		resultSize: [
+			{ label: "10", value: 10 },
+			{ label: "20", value: 20 },
+			{ label: "30", value: 30 },
+			{ label: "40", value: 40 },
+			{ label: "50", value: 50 },
+		],
+		size: 10,
+	}
+	static async getInitialProps({ pathname, query }) {
+		return {
+			store: await initReactivesearch(
+				[
+					{
+						datasearch: { ...components.datasearch },
+						source: DataSearch,
+					},
+					{
+						resultcard: { ...components.resultcard },
+						source: ReactiveList,
+					},
+
+				],
+				null,
+				components.settings,
+				query
+			)
+		}
+	}
+	onChange = (value, props) => {
+		this.setState({
+			value,
+		});
+
+	}
+	onChangeSize = async (size) => {
+		await this.setState({
+			size: size.value
+		})
+		console.log(size.value)
+	}
+	filterSelected = (props) => {
+		let valueToHold = [], index = 0
+		const { selectedValues, setValue } = props
+		//list of available components for filter search results
+		const listOffilters = ["artistFilter"]
+		const clearFilter = (toFilters) => {
+			toFilters.forEach(item => {
+				if (listOffilters.includes(item)) {
+					setValue(item, null)
+				}
+			})
+		}
+		//set filtered components
+		const setFilter = (getComponentObj) => {
+			getComponentObj.forEach((item) => {
+				if (listOffilters.includes(item.label)) {
+					if (item.value !== null && item.value.length === 0) {
+						index = valueToHold.indexOf(item.label);
+						if (index > -1) {
+							valueToHold.splice(index, 1);
+						}
+					} else {
+						valueToHold.push(item.label)
+					}
+				}
+			})
+
+			return valueToHold
+		}
+
+		const toFilter = Object.keys(selectedValues).map((component) => {
+			return component
+
+		})
+		//get selected component obj
+		const getComponentObj = Object.keys(selectedValues).map((component) => {
+			return selectedValues[component]
+		})
+
+		//hide clear button to non-selected components, show otherwise
+		if (Object.keys(setFilter(getComponentObj)).length > 0) {
+			return (
+				<button
+					onClick={() => clearFilter(toFilter)}
+				>
+					clear
+				</button>
+			)
+		}
+
+		return null
+	}
+	render() {
+		return (
+
+			<ReactiveBase
+				theme={{
+					typography: {
+						fontFamily: 'Myriad Pro", Myriad, "Liberation Sans", "Nimbus Sans L", "Helvetica Neue", Helvetica, Arial, sans-serif',
+					},
+				}}
+				{...components.settings} getInitialProps={this.props.store}>
+				<Header />
+				<Layout>
+					<div className='row '>
+						<div className='col-sm-20'>
+							<div className='global-search__container'>
+								<DataSearch
+									onValueChange={(value) => {
+										console.log("current value: ", value)
+										this.setState({
+											value,
+										})
+									}}
+									icon={< img onClick={() => Router.push(`/?searchSensor="${this.state.value}"`)} src="/static/search-icon.svg" style={{ display: 'flex' }} />}
+									{...components.datasearch} />
+								{/* <SearchInput /> */}
+							</div>
+						</div>
+					</div>
+					{/* <div className='row'>
+						<DataSearch {...components.datasearch} value={this.state.value} onChange={this.onChange} /> */}
+					{/* <SearchInput /> */}
+					{/* </div> */}
+					<div className="row">
+						{/* <Filter /> */}
+						{/* <NumberBox {...components.numberbox} /> */}
+						{/* <RangeSlider {...components.rangeslider} /> */}
+						<div className='col-sm-5'>
+							<div className='sidebar__container'>
+								<h5>
+									Filter Search Results
+									<SelectedFilters render={this.filterSelected} />
+								</h5>
+								<MultiList {...components.artistfilter} />
+							</div>
+						</div>
+						<div className='col-sm-15'>
+							<TabHeader />
+							<ReactiveList {...components.resultcard}
+								size={this.state.size}
+							/>
+							<div className='result-select__container'>
+								<span>
+									Show <Select options={this.state.resultSize}
+										onChange={this.onChangeSize}
+										className='show-select'
+										placeholder={this.state.size}
+										classNamePrefix='show-select'
+									/>
+								</span>
+							</div>
+						</div>
+					</div>
+				</Layout>
+			</ReactiveBase>
+		)
+	}
+}

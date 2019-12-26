@@ -1,0 +1,71 @@
+.btn {
+    // padding: 7px 18px;
+    &.btn {
+        &--standard {
+            background-color: $button-bg-color;
+            color: #fff;
+
+            &:hover {
+                background-color: #0390ee;
+            }
+
+            &__gray {
+                background-color: #fff;
+                border: 1px solid $gray;
+                color: #000;
+
+                &:hover {
+                    background-color: $pale-gray;
+                }
+            }
+        }
+
+        &--secondary {
+            background-color: #ececec;
+            color: #000;
+        }
+
+        &--outline {
+            border: 1px solid $button-bg-color;
+            color: $button-bg-color;
+
+            &:hover {
+                background-color: $button-bg-color;
+                color: #fff;
+            }
+        }
+
+        &--outline-gray {
+            border: 1px solid $gray;
+            color: $gray;
+        }
+
+        &--rounded {
+            border-radius: 20px;
+        }
+
+        &--raised {
+            box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2),
+                0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+                0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+        }
+
+        &--flat {
+            color: #000;
+            background-color: transparent;
+
+            &:hover {
+                background-color: #d1d1d1;
+            }
+            &:focus {
+                outline: none;
+                box-shadow: none;
+            }
+        }
+
+        &--disabled {
+            pointer-events: none;
+            background-color: $button-disabled-bg-color;
+        }
+    }
+}

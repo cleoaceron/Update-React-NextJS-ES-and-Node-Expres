@@ -1,0 +1,41 @@
+import PropTypes from 'prop-types';
+
+const DiscussionResult = data => {
+
+	return (
+		<div className='discussion-result__container' key={data._id}>
+			{
+				data._type === 'discussion' ?
+					<div>
+						<div className='discussion-result__header'>
+							<a href={'https://community.musictribe.com' + data.view_href} target='_blank'>
+								<p><span dangerouslySetInnerHTML={{ __html: data.subject }}></span></p>
+								<p>{'https://community.musictribe.com' + data.view_href}</p>
+							</a>
+						</div>
+
+						<div className='discussion-result__body'>
+							<div className='discussion-result__body--description'>
+								{/* <p dangerouslySetInnerHTML={{ __html: data.body }}></p> */}
+								<p>by <span dangerouslySetInnerHTML={{ __html: data.author.login }} /></p>
+								<p dangerouslySetInnerHTML={{
+									__html: data.body.length > 250 ?
+										data.body.substring(0, 230) + '...' : data.body
+								}} />
+							</div>
+						</div>
+					</div>
+					:
+					null
+			}
+		</div>
+	)
+
+}
+
+
+DiscussionResult.propTypes = {
+	data: PropTypes.any, // eslint-disable-line
+};
+
+export default DiscussionResult;

@@ -1,0 +1,494 @@
+import React, { Component } from 'react'
+import Layout from '../components/Layout'
+import Header from '../components/Header'
+// import SearchInput from '../components/SearchInput'
+import DiscussionResult from '../components/DiscussionResult'
+import TabHeader from './TabHeader'
+
+import Select from 'react-select';
+
+import {
+	ReactiveBase,
+	ReactiveList,
+	SelectedFilters,
+	StateProvider,
+	DataSearch,
+	MultiList,
+	MultiDataList,
+	RatingsFilter
+} from '@appbaseio/reactivesearch'
+import initReactivesearch from '@appbaseio/reactivesearch/lib/server';
+import Router from 'next/router';
+
+const components = {
+	settings: {
+		app: 'artists,products,downloads,videos,learn,artist,news,customer,brand',
+		url: 'https://elastic.musictribe.com'
+	},
+	datasearch: {
+		componentId: 'searchSensor',
+		dataField: ["artistName", "name", "productName", "productId", "code", "title", "subject", "brand", "body"],
+		autosuggest: true,
+		highlight: true,
+		// noInitialQuery: true,
+		placeholder: 'Search',
+		iconPosition: 'right',
+		className: 'global-search__input col-sm-10',
+		innerClass: {
+			input: 'global-input'
+
+		},
+		// onValueSelected: '{(value)=> Router.push(`searchSensor=${value}`)}',
+		onValueSelected: (value, cause, source) => {
+			Router.push(`/?searchSensor="${value}"`)
+			// if (!value) {
+			// 	return document.location.href = `/`
+			// } else {
+			// 	return document.location.href = `/?searchSensor="${value}"`
+			// }
+		},
+		URLParams: true,
+		renderNoSuggestion: () => (
+			<div>
+				No suggestion found
+		</div>
+		),
+		defaultQuery: (value) => ({
+			"query": {
+				"multi_match": {
+					"query": `"${value}"`,
+					"fields": ["artistName", "name", "productName", "productId", "code", "title", "brand", "subject"]
+				}
+			}
+		}),
+		// customHighlight: (props) => ({
+		// 	"query": {
+		// 		"multi_match": {
+		// 			"query": `"${props.selectedValue}"`,
+		// 			"fields": ["subject", "body"]
+		// 		}
+		// 	},
+		// 	highlight: {
+		// 		pre_tags: ['<mark>'],
+		// 		post_tags: ['</mark>'],
+		// 		"type": "unified",
+		// 		"number_of_fragments": 3,
+		// 		"fields": {
+		// 			"body": {},
+		// 			"subject": {}
+		// 		},
+		// 	},
+		// }),
+		render: ({
+			loading,
+			error,
+			data,
+			value,
+			downshiftProps: {
+				isOpen,
+				getItemProps,
+			}
+		}) => {
+			// console.log(data)
+			if (loading) {
+				return <div className="suggested__container">Fetching Suggestions.</div>
+			}
+			if (error) {
+				return (
+					<div>
+						Something went wrong! Error details {JSON.stringify(error)}
+					</div>
+				)
+			}
+			return (isOpen && Boolean(value.length)) ? (
+				<div className="suggested__container">
+					{data.slice(0, 5).map((suggestion, index) => (
+						<div className='suggested__value'
+							key={suggestion.value}
+							{...getItemProps({ item: suggestion })}
+						>
+							<span dangerouslySetInnerHTML={{ __html: suggestion.value.replace(/<[^>]+>/g, '') }}></span>
+							{/* {suggestion.value} */}
+							{/* {console.log(suggestion.source)} */}
+						</div>
+					))}
+					{Boolean(value.length) && (
+						<div {...getItemProps({ item: { label: value, value: value } })}>
+							Show all results for "{value}"
+				</div>
+					)}
+					{console.log(data)}
+				</div>
+			) : null
+		}
+	},
+	resultcard: {
+		componentId: 'discussionResult',
+		dataField: ["subject", "search_snippet", "body"],
+		pagination: true,
+		URLParams: true,
+		paginationAt: 'bottom',
+		pages: 5,
+		size: 10,
+		showEndPage: true,
+		defaultQuery: () => ({
+			query: {
+				terms: {
+					_type: ['discussion'],
+				},
+			},
+		}),
+		renderResultStats: (stats) => (
+			<div className='result-stats__container'>
+				<p>{`( Showing page ${stats.currentPage + 1} of ${stats.numberOfPages} ) displayed result of ${stats.displayedResults} total of ${stats.numberOfResults} results in ( ${stats.time} ms )`}</p>
+			</div>
+		),
+		renderPagination: ( pages, totalPages, currentPage, setPage, fragmentName ) => {
+			/* 			new Array(pages.pages).fill(pages.currentPage).map((item, i) => 
+							console.log((item + 1)+ ' ' + i + ' : ' + parseInt(i + (item + 1)))
+						)
+			 */
+			let innerPages, innerTotalPages, subPages
+			
+			innerTotalPages = pages.totalPages - pages.currentPage
+			if (innerTotalPages < pages.pages) {
+				subPages = innerTotalPages
+			} else {
+				subPages = pages.pages
+			}
+
+			const selectPage = Number.isFinite(pages.totalPages) && (
+				<div className="result-paginate__container">
+					<a 
+						className={``}
+						tabindex={`0`}
+						onClick={ e => (!pages.currentPage) ? null : pages.setPage(parseInt((pages.currentPage - 1), 10))} 
+						alt={`Page 1`} 
+						rel={`prev`}
+						style={((pages.currentPage + 1) > 1) ? {display: 'inline'}: {display:'none'} }
+					>
+						{`<`}
+					</a>
+
+					<a 
+						className={``} 
+						tabindex={`0`}
+						onClick={e => (!pages.currentPage) ? null : pages.setPage(null)} 
+						rel={`next`} 
+						alt={`Page 3`}
+						style={((pages.currentPage + 1) > 1) ? {display: 'inline'}: {display:'none'} }
+					>
+						{`1`}
+					</a>
+
+					<a 
+						className={``} 
+						tabindex={`0`}
+						onClick={e => (pages.currentPage < pages.pages) ? null : pages.setPage(parseInt((pages.currentPage - 5), 10))} 
+						rel={`next`} 
+						alt={`Page 3`}
+						style={(pages.currentPage < pages.pages) ? {display: 'none'}: {display:'inline'} }
+					>
+						{`...`}
+					</a>
+
+					
+					{new Array(subPages).fill(pages.currentPage).map((item, i) =>
+
+							<a 
+								className={(pages.currentPage + 1) == parseInt(i + (item + 1)) ? 'active' : ''} 
+								tabindex={`0`} 
+								onClick={(pages.currentPage >= pages.totalPages) ? null : e => pages.setPage(parseInt((i + item), 10))} 
+								alt={`Page 1`} 
+								key={`${i}-${pages.fragmentName}`}
+							>
+								{i + (item + 1)}
+							</a>
+					)}
+
+					<a 
+						className={``} 
+						tabindex={`0`}
+						onClick={e => ((pages.currentPage + pages.pages) >= pages.totalPages) ? null : pages.setPage(parseInt((pages.currentPage + 5), 10))} 
+						rel={`next`} 
+						alt={`Page 3`}
+						style={((pages.currentPage + 1) > pages.pages) ? {display: 'inline'}: {display:'none'} }
+					>
+						{`...`}
+					</a>
+						
+
+					<a 
+						className={``} 
+						tabindex={`0`}
+						onClick={e => ((pages.currentPage + 1) >= pages.totalPages) ? null : pages.setPage(pages.totalPages - 1, 10)} 
+						rel={`next`} 
+						alt={`Page 3`}
+						style={((pages.currentPage + 1) > pages.pages) ? {display: 'inline'}: {display:'none'} }
+					>
+						{pages.totalPages}
+					</a>
+
+					<a 
+						className={``} 
+						tabindex={`0`}
+						onClick={e => ((pages.currentPage + 1) >= pages.totalPages) ? null : pages.setPage(parseInt((pages.currentPage + 1), 10))} 
+						rel={`next`} 
+						alt={`Page 3`}
+						style={((pages.currentPage + 1) > pages.pages) ? {display: 'inline'}: {display:'none'} }
+					>
+						{`>`}
+					</a>
+				</div>
+			)
+		
+			return selectPage
+		},
+		render: ({
+			loading,
+			error,
+			data,
+		}) => {
+			if (loading) {
+				return <div className='loader__container'>
+					<img src='/static/loader.gif' />
+				</div>
+			}
+			if (error) {
+				return (
+					<div>
+						Something went wrong! Error details {JSON.stringify(error)}
+					</div>
+				)
+			}
+			return (
+				data.map(item => (
+					<DiscussionResult key={item._id} {...item} />
+				))
+			)
+		},
+		pagination: true,
+		URLParams: true,
+		react: {
+			and: ["searchSensor", "discussionFilter", "ratingsSensor"],
+		},
+	},
+	discussionfilter: {
+		componentId: 'discussionFilter',
+		dataField: 'board.root_category.keyword',
+		data: [
+			{
+				label: "Learn",
+				value: "academy",
+			},
+			{
+				label: "Brands Tribe",
+				value: "brands",
+			},
+			{
+				label: "Customer Tribe",
+				value: "tribe",
+			},
+			{
+				label: "Artist",
+				value: "stories",
+			},
+			{
+				label: "News",
+				value: "",
+			},
+		],
+		title: 'Discussion',
+		className: 'filter__container',
+		showSearch: false,
+		URLParams: true,
+		showCount: true,
+		defaultQuery: () => ({
+			query: {
+				terms: {
+					_index: ['learn', 'news', 'artist', 'customer', 'brand'],
+				},
+			},
+		}),
+		renderItem: (label, count, isSelected) => (
+			<div>
+				{label}
+				<span style={{
+					//marginLeft: 5, color: isSelected ? 'red' : 'dodgerblue'
+					marginLeft: 5
+				}}>
+					{'('+count+')'}
+				</span>
+			</div>
+		),
+		react: {
+			or: ["searchSensor", "resultCard"],
+		},
+	}
+}
+
+export default class Products extends Component {
+	state = {
+		reactivedata: this.props,
+		value: this.props.url.query.searchSensor,
+		resultSize: [
+			{ label: "10", value: 10 },
+			{ label: "20", value: 20 },
+			{ label: "30", value: 30 },
+			{ label: "40", value: 40 },
+			{ label: "50", value: 50 },
+		],
+		size: 10,
+	}
+	static async getInitialProps({ pathname, query }) {
+		return {
+			store: await initReactivesearch(
+				[
+					{
+						datasearch: { ...components.datasearch },
+						source: DataSearch,
+					},
+					{
+						resultcard: { ...components.resultcard },
+						source: ReactiveList,
+					},
+				],
+				null,
+				components.settings,
+				query
+			)
+		}
+	}
+	onChange = (value, props) => {
+		this.setState({
+			value,
+		})
+	}
+	onChangeSize = async (size) => {
+		await this.setState({
+			size: size.value
+		})
+		console.log(size.value)
+	}
+	filterSelected = (props) => {
+		let valueToHold = [], index = 0
+		const { selectedValues, setValue } = props
+		//list of available components for filter search results
+		const listOffilters = ["discussionFilter"]
+		const clearFilter = (toFilters) => {
+			toFilters.forEach(item => {
+				if (listOffilters.includes(item)) {
+					setValue(item, null)
+				}
+			})
+		}
+		//set filtered components
+		const setFilter = (getComponentObj) => {
+			getComponentObj.forEach((item) => {
+				if (listOffilters.includes(item.label)) {
+					if (item.value !== null && item.value.length === 0) {
+						index = valueToHold.indexOf(item.label);
+						if (index > -1) {
+							valueToHold.splice(index, 1);
+						}
+					} else {
+						valueToHold.push(item.label)
+					}
+				}
+			})
+
+			return valueToHold
+		}
+
+		const toFilter = Object.keys(selectedValues).map((component) => {
+			return component
+
+		})
+		//get selected component obj
+		const getComponentObj = Object.keys(selectedValues).map((component) => {
+			return selectedValues[component]
+		})
+
+		//hide clear button to non-selected components, show otherwise
+		return (
+			<button
+				onClick={() => clearFilter(toFilter)}
+				disabled={(Object.keys(setFilter(getComponentObj)).length > 0) ? false : true}
+			>
+				Clear Filters
+			</button>
+		)
+	}
+	render() {
+		return (
+			<ReactiveBase
+				theme={{
+					typography: {
+						fontFamily: 'Myriad Pro", Myriad, "Liberation Sans", "Nimbus Sans L", "Helvetica Neue", Helvetica, Arial, sans-serif',
+					},
+				}}
+				{...components.settings} getInitialProps={this.props.store}>
+				<Header />
+				<Layout>
+					<div className='row '>
+						<div className='col-sm-20'>
+							<div className='global-search__container'>
+								<DataSearch
+									onValueChange={(value) => {
+										this.setState({
+											value,
+										})
+									}}
+									icon={< img onClick={() => Router.push(`/?searchSensor="${this.state.value}"`)} src="/static/search-icon.svg" style={{ display: 'flex' }} />}
+									{...components.datasearch} />
+								{/* <SearchInput /> */}
+							</div>
+						</div>
+					</div>
+					<div className="row">
+						{/* <Filter /> */}
+						{/* <NumberBox {...components.numberbox} /> */}
+						{/* <RangeSlider {...components.rangeslider} /> */}
+						<div className='col-sm-5'>
+							<div className='sidebar__container filter'>
+								<h5 className='filter-title'>
+									<span>Filter Search Results</span>
+									<span><SelectedFilters render={this.filterSelected} /></span>
+								</h5>
+								<MultiDataList {...components.discussionfilter} />
+								{/* <RatingsFilter
+									componentId="ratingsSensor"
+									dataField="averageRating"
+									title="Ratings"
+									className="filter__container"
+									data={[
+										{ start: 4, end: 5, label: '4 stars and up' },
+										{ start: 3, end: 5, label: '3 stars and up' },
+										{ start: 2, end: 5, label: '2 stars and up' },
+										{ start: 1, end: 5, label: '> 1 stars' },
+									]}
+								/> */}
+							</div>
+						</div>
+						<div className='col-sm-15'>
+							<TabHeader />
+							<ReactiveList {...components.resultcard}
+								size={this.state.size}
+							/>
+							<div className='result-select__container'>
+								<span>
+									Show <Select options={this.state.resultSize}
+										onChange={this.onChangeSize}
+										className='show-select'
+										placeholder={this.state.size}
+										classNamePrefix='show-select'
+									/>
+								</span>
+							</div>
+						</div>
+					</div>
+				</Layout>
+			</ReactiveBase>
+		)
+	}
+}

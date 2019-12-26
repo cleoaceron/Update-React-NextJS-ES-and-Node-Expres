@@ -1,0 +1,61 @@
+// Grid breakpoints
+//
+// Define the minimum dimensions at which your layout will change,
+// adapting to different screen sizes, for use in media queries.
+$grid-breakpoints: (
+    xs: 0,
+    sm: 768px,
+    md: 992px,
+    lg: 1200px,
+    xl: 1350px
+) !default;
+
+// Grid containers
+// Define the maximum width of `.container` for different screen sizes.
+$container-max-widths: (
+    sm: 750px,
+    md: 970px,
+    lg: 1170px,
+    xl: 1290px
+) !default;
+// Grid columns
+// Set the number of columns and specify the width of the gutters.
+$grid-columns: 20 !default;
+$grid-gutter-width: 6px !default;
+$grid-gutter-width-lg: 15px !default;
+// Border
+// Set the default properties of the border
+$border-color: #dddddd;
+$spacer: 6px !default;
+$spacers: () !default;
+// stylelint-disable-next-line scss/dollar-variable-default
+$spacers: map-merge(
+    (
+        0: 0,
+        1: $spacer,
+        2: (
+            $spacer * 2
+        ),
+        3: (
+            $spacer * 3
+        ),
+        4: (
+            $spacer * 4
+        ),
+        5: (
+            $spacer * 5
+        )
+    ),
+    $spacers
+);
+.row {
+    margin-right: 0;
+    margin-left: 0;
+    & > [class^='col-'],
+    & > [class*=' col-'] {
+        padding: {
+            top: 3px;
+            bottom: 3px;
+        }
+    }
+}

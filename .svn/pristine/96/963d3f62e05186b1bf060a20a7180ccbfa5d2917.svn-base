@@ -1,0 +1,190 @@
+$size: 13px;
+
+.rating {
+    $self: &;
+    position: relative;
+
+    svg {
+        height: $size;
+        display: block;
+    }
+
+    input {
+        position: absolute;
+        width: 0;
+        height: 0;
+        left: -10px;
+        opacity: 0;
+        transform: scale(0);
+    }
+
+    label {
+        margin-bottom: 0;
+        vertical-align: text-top;
+        position: relative;
+        margin-right: 5px;
+        width: $size;
+        height: $size;
+
+        &.half {
+            width: $size / 2;
+            margin: 0;
+            margin-right: -$size / 2;
+        }
+    }
+
+    input:checked ~ label path {
+        fill: $yellow;
+    }
+
+    label:hover path,
+    label:hover ~ label path,
+    input:checked ~ label:hover path {
+        fill: lighten($color: $yellow, $amount: 20);
+    }
+
+    &__label {
+        // font-size: $font-sm;
+        line-height: 1;
+        // color: $blue-900;
+    }
+
+    &__container {
+        display: inline-block;
+        & > label {
+            float: right;
+        }
+
+        & > div {
+            display: inline-block;
+        }
+    }
+
+    &--disabled {
+        pointer-events: none;
+    }
+
+    &--md {
+        svg {
+            height: $size * 1.5;
+        }
+
+        label {
+            width: $size * 1.5;
+            height: $size * 1.5;
+
+            &.half {
+                width: ($size * 1.5) / 2;
+                margin: 0;
+                margin-right: -($size * 1.5) / 2;
+            }
+        }
+
+        #{$self}__label {
+            font-size: 16px;
+        }
+    }
+
+    &--lg {
+        svg {
+            height: $size * 2;
+        }
+
+        label {
+            width: $size * 2;
+            height: $size * 2;
+
+            &.half {
+                width: ($size * 2) / 2;
+                margin: 0;
+                margin-right: -($size * 2) / 2;
+            }
+        }
+
+        #{$self}__label {
+            font-size: 16px;
+        }
+    }
+
+    &--xl {
+        svg {
+            height: $size * 2.5;
+        }
+
+        label {
+            width: $size * 2.5;
+            height: $size * 2.5;
+
+            &.half {
+                width: ($size * 2.5) / 2.5;
+                margin: 0;
+                margin-right: -($size * 2.5) / 2.5;
+            }
+        }
+
+        #{$self}__label {
+            font-size: 16px;
+        }
+    }
+
+    &-stars {
+        $self: &;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        width: 100%;
+
+        &__container {
+            height: 15px;
+            width: 90px;
+            background-image: url('/static/icon_star-gray.svg');
+            background-size: contain;
+            background-position: top 0 left 0;
+            background-repeat: repeat-x;
+            color: #00abed;
+            position: relative;
+            overflow: hidden;
+
+            @include media-breakpoint-up(sm) {
+                height: 17px;
+                width: 100px;
+            }
+        }
+        &__percentage {
+            position: absolute;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background-image: url('/static/icon_star.svg');
+            background-size: 20px;
+            background-position: top 0 left 0;
+            background-repeat: repeat-x;
+            color: #00abed;
+        }
+        &__count {
+            padding-left: 3px;
+            font-size: 12px;
+            line-height: 1em;
+        }
+
+        &--sm {
+            #{$self}__container {
+                height: 11px;
+                width: 65px;
+            }
+            #{$self}__percentage {
+                background-size: 13px;
+            }
+        }
+
+        &--lg {
+            #{$self}__container {
+                height: 20px;
+                width: 120px;
+            }
+            #{$self}__percentage {
+                background-size: 24px;
+            }
+        }
+    }
+}

@@ -1,0 +1,14 @@
+.badge {
+    margin: 5px;
+    border-radius: 0;
+
+    &--standard {
+        background-color: #343a40;
+        color: #fff;
+        padding: 5px;
+
+        &:hover {
+            color: #f4f4f4;
+        }
+    }
+}

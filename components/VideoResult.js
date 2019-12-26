@@ -1,0 +1,58 @@
+import React, { useState, useRef, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import ReactModal from 'react-modal';
+
+const VideoResult = data => {
+	const [showModal, setModal] = useState(false)
+	const handleOpenModal = () => {
+		setModal(true)
+	}
+
+	const handleCloseModal = () => {
+		setModal(false)
+	}
+	console.log(data)
+	return (
+		data._type === 'video' ?
+			<div className='video-result__container' key={data._id}>
+
+				<div className='video-result__header'>
+					<a href='#' onClick={handleOpenModal}>
+						<p><span dangerouslySetInnerHTML={{ __html: data.title }}></span></p>
+						<span>{data.url}</span>
+					</a>
+				</div>
+
+				<div className='video-result__body'>
+					<div className='video-result__body--img'>
+						<div class='video-overlay' onClick={handleOpenModal}></div>
+						<iframe controls
+							src={data.url}>
+						</iframe>
+					</div>
+					<div className='video-result__body--description'>
+						{/* <p><span dangerouslySetInnerHTML={{ __html: data.code }}></span></p> */}
+					</div>
+				</div>
+				<ReactModal
+					isOpen={showModal}
+					onRequestClose={handleCloseModal}
+					className='esmodal'
+					overlayClassName='overlay'
+				>
+					<iframe controls
+						src={data.url}>
+					</iframe>
+				</ReactModal>
+			</div>
+			:
+
+			null
+	)
+}
+
+VideoResult.propTypes = {
+	data: PropTypes.any, // eslint-disable-line
+};
+
+export default VideoResult;

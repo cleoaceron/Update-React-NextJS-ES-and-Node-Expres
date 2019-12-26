@@ -1,0 +1,23 @@
+.tab-header {
+	&__container {
+		border-bottom: 1px solid #bfbebe;
+		padding-bottom: 2px;
+		margin: 0 0 10px 12px;
+		a {
+			color: #424242;
+			font-weight: 600;
+			font-size: 16px;
+			padding-left: 0;
+			padding-right: 1.5rem;
+			&.nav-link {
+				// border:1px solid red;
+			}
+			&.active {
+				& span {
+					color: #26a0e3;
+					border-bottom: 2px solid #26a0e3;
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,40 @@
+.form {
+    &--login {
+        width: 100%;
+        margin: 0 auto;
+        border: $border;
+        border: 1px solid #dddddd;
+        padding: ($spacing * 4) ($spacing * 2);
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+
+        @include media-breakpoint-up(sm) {
+            width: 600px;
+        }
+    }
+}
+
+.search {
+    &__input {
+        background: {
+            image: url('~/images/icons/search.png');
+            repeat: no-repeat;
+            position: right;
+            position-x: 97%;
+        }
+    }
+
+    &__group {
+        position: relative;
+    }
+
+    &__remove {
+        position: absolute;
+        top: 0;
+        right: 0;
+        background-color: #000;
+        color: #fff;
+    }
+}

@@ -1,0 +1,65 @@
+.cross {
+    width: 24px;
+    height: 24px;
+    display: inline-block;
+    border-radius: 50%;
+    position: relative;
+    vertical-align: middle;
+    margin: 8px;
+    background-color: rgba(240, 82, 40, 1);
+    border: 2px solid rgba(240, 82, 40, 0);
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+
+    &.active {
+        background-color: rgba(240, 82, 40, 0);
+        border: 2px solid rgba(240, 82, 40, 1);
+        transition: all 0.3s ease-in-out;
+        transform: rotate(45deg);
+
+        .cross__indicator {
+            &:before,
+            &:after {
+                border: 2px solid rgba(240, 82, 40, 1);
+                border-width: 3px 0px 0px 0px;
+                position: absolute;
+                width: 15px;
+                height: 10px;
+                transition: all 0.3s ease-in-out;
+            }
+
+            &:before {
+                transform: rotate(90deg);
+                top: 5px;
+                right: 6px;
+                transition: all 0.3s ease-in-out;
+            }
+            &:after {
+                top: 8px;
+                right: 2px;
+            }
+        }
+    }
+
+    .cross__indicator {
+        &:before,
+        &:after {
+            content: '';
+            border: solid #ffffff;
+            border-width: 3px 0px 0px 0px;
+            position: absolute;
+            width: 15px;
+            height: 10px;
+            transition: all 0.3s ease-in-out;
+        }
+        &:before {
+            transform: rotate(90deg);
+            top: 5px;
+            right: 6px;
+        }
+        &:after {
+            top: 8px;
+            right: 2px;
+        }
+    }
+}

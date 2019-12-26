@@ -1,0 +1,39 @@
+import React from 'react';
+import PropTypes from 'prop-types';
+
+const ArtistResult = data => {
+
+	return (
+		data._type === 'artist' ?
+			<div className='all-result__container' key={data._id}>
+				<div className='all-result__header'>
+					<a href={data.urlExtension} target='_blank'>
+						<p><span dangerouslySetInnerHTML={{ __html: data.artistName }}></span> | {data.artistBrand}</p>
+						<p>{data.urlExtension}</p>
+					</a>
+				</div>
+
+				<div className='all-result__body'>
+					<div className='all-result__body--description'>
+						{
+							data.typesOfArtist ?
+								<p>{data.typesOfArtist}</p> : ''
+						}
+						{
+							data.artistBand === null || data.artistBand === "" ?
+								'' : <p><strong>Band: </strong><span dangerouslySetInnerHTML={{ __html: data.artistBand.replace(/<[^>]+>/g, '') }}></span></p>
+						}
+					</div>
+				</div>
+			</div>
+			:
+
+			null
+	)
+}
+
+ArtistResult.propTypes = {
+	data: PropTypes.any, // eslint-disable-line
+};
+
+export default ArtistResult;

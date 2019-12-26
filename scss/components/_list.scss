@@ -1,0 +1,9 @@
+.list {
+    // default style
+    padding: ($spacing / 3) $spacing;
+    margin: 0;
+
+    li {
+        text-transform: capitalize;
+    }
+}

@@ -1,0 +1,110 @@
+.pullup-action {
+    width: 100%;
+    max-width: 30em;
+    position: fixed;
+    right: 0%;
+    bottom: 0px;
+    z-index: 5;
+    transition: all 0.3s ease-in-out;
+    transform: translateY(200%);
+    box-shadow: 0px 0px 48px 1px rgba(0, 0, 0, 0.75);
+    @include media-breakpoint-up(sm) {
+        right: 6%;
+    }
+    &.active {
+        bottom: 0px;
+        transform: translateY(0%);
+    }
+    &__container {
+        background-color: white;
+
+        &.active {
+            .pullup-action__body {
+                transition: all 0.3s ease-in-out;
+                height: 20em;
+                max-height: 20em;
+            }
+        }
+    }
+    &__header {
+        color: #fff;
+        background-color: #222;
+        padding: 0.5em;
+        margin-bottom: 0px;
+        cursor: pointer;
+
+        .download-count {
+            display: inline-block;
+            margin-right: 6px;
+            color: #e74c3c;
+            font-weight: 600;
+            font-size: 1em;
+        }
+    }
+    &__body {
+        transition: all 0.3s ease-in-out;
+        height: 0;
+        width: 100%;
+        overflow-y: auto;
+
+        p {
+            margin: 6px 0px;
+            padding: 0px 8px;
+        }
+        div {
+            margin-bottom: 6px;
+            padding: 0px 8px;
+            &:first-child {
+                margin-bottom: 18px;
+            }
+            img {
+                margin-right: 6px;
+                max-width: 65px;
+            }
+            &:first-child {
+                padding: 8px 8px;
+            }
+        }
+    }
+
+    &__title {
+        border-bottom: $border;
+
+        .title {
+            font-size: 14px;
+            border-right: $border;
+            padding-right: $spacing;
+        }
+
+        .btn {
+            font-size: 12px;
+            color: #e74c3c;
+        }
+
+        svg {
+        }
+    }
+
+    &__list {
+        svg {
+            color: #212529;
+            margin: 0 6px;
+            &:hover {
+                color: #e74c3c;
+            }
+        }
+    }
+
+    .download__compress {
+        cursor: pointer;
+        position: relative;
+        top: 5px;
+    }
+    .scroll {
+        color: #fff;
+        cursor: pointer;
+    }
+    .spinner {
+        width: 17px;
+    }
+}

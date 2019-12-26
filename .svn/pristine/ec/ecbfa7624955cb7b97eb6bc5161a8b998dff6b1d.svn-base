@@ -1,0 +1,42 @@
+.sidebar {
+	&__container {
+		border: 1px solid #c4c3c3;
+		padding: 12px;
+		margin: 8px 0 0 0;
+		h5 {
+			border-bottom: 1px solid #c4c3c3;
+			padding: 0 0 12px 0;
+			font-size: 1.15rem
+		}
+		p{
+			margin:0 0 8px 0;
+			font-size:1rem;
+		}
+	}
+}
+
+.advance-search {
+	&__container {
+		input{
+			border:1px solid #dbdbdb;
+			border-radius:8px;
+			-moz-border-radius: 8px;
+			-webkit-border-radius: 8px;
+			height: 35px;
+			background: #ffffff;
+		}
+	}
+}
+
+.filter {
+	&__container {
+		margin: 8px 0 0 0;
+		border-bottom: 1px solid #c4c3c3;
+		ul {
+			// max-height: 100%;
+		}
+		&:last-child{
+			border-bottom: 0;
+		}
+	}
+}

@@ -1,0 +1,53 @@
+.result-select {
+	&__container {
+		span{
+			width: 100%;
+		}
+		.show-select {
+			width: 10%;
+			display: inline-block;
+		}
+	}
+}
+
+.result-paginate {
+	&__container {
+		margin: 10px -3px;
+		max-width: 100%;
+		text-align: center;
+
+		a {
+			margin: 0 5px;
+			text-decoration: none;
+			display: inline-block;
+			min-width: 32px;
+			height: 32px;
+			margin-right: 8px;
+			font-family: Arial;
+			line-height: 30px;
+			text-align: center;
+			vertical-align: middle;
+			background-color: rgb(255, 255, 255);
+			cursor: pointer;
+			user-select: none;
+			list-style: none;
+			border-width: 1px;
+			border-style: solid;
+			border-color: rgb(217, 217, 217);
+			border-image: initial;
+			border-radius: 4px;
+			outline: 0px;
+			color: rgba(0, 0, 0, 0.65);
+			padding: 0px 6px;
+			transition: none 0s ease 0s;
+
+			&:hover {
+				background-color: #ccc;
+			}
+
+			&.active {
+				background-color: #ccc;
+			}
+		}
+	}
+}
