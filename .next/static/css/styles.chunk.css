@@ -8615,8 +8615,6 @@ a.text-dark:hover, a.text-dark:focus {
         font-size: 14px; }
   .image-result__body img {
     height: 100%; }
-  .image-result__body:last-child .image-result__body--img {
-    display: inline-block; }
 
 .artist-result__container {
   margin-left: 12px;

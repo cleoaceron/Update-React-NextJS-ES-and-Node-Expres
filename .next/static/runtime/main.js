@@ -5139,7 +5139,7 @@ function connect(options) {
       error.name = err.name;
       error.stack = err.stack; // __NEXT_DIST_DIR is provided by webpack
 
-      (0, _sourceMapSupport.rewriteStacktrace)(error, "C:\\xampp\\htdocs\\test-site\\.next");
+      (0, _sourceMapSupport.rewriteStacktrace)(error, "c:\\xampp\\htdocs\\test-site\\.next");
       return error;
     }
   };
