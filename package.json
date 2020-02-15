@@ -39,7 +39,7 @@
 		"react-modal": "^3.10.1",
 		"react-select": "^2.0.0-beta.7",
 		"react-tooltip": "^3.11.1",
-		"yarn": "^1.17.3"
+		"yarn": "^1.22.0"
 	},
 	"devDependencies": {
 		"@appbaseio/reactivecore": "^8.2.7",
